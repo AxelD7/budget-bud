@@ -1,22 +1,30 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 
 	_ "github.com/lib/pq"
 )
 
-func CreateUser(w http.ResponseWriter, r *http.Request) {
-
-	sqlStatement := `INSERT INTO users (fname, lname, budgetid, goalitemid)
-	VALUES ($1, $2, $3, $4);`
-
-	err := db.QueryRow(sqlStatement)
+func dbTest(w http.ResponseWriter, r *http.Request) {
+	decoder := json.NewDecoder(r.Body)
+	var usr User
+	err := decoder.Decode(&usr)
+	fmt.Println("User is decoding")
 	if err != nil {
-		log.Println(err)
+		panic(err)
 	}
-	fmt.Println("The user has been created")
 
+	fmt.Printf("!!!!!The user is %#v", usr)
+
+	user, err := updateUser(usr)
+	if err != nil {
+		fmt.Printf("error updating user - %s", err)
+		return
+	}
+
+	fmt.Printf("the user has been updated - id %v", user)
+	w.WriteHeader(http.StatusOK)
 }

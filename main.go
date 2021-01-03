@@ -31,7 +31,8 @@ func main() {
 
 	// Handlers
 	http.HandleFunc("/", root)
-	http.HandleFunc("/test", createUser)
+
+	http.HandleFunc("/c/usr", dbTest)
 
 	fmt.Printf("Server started on port 8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
